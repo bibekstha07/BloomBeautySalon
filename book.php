@@ -65,10 +65,10 @@ include 'php/header.php';
         <?php
         // SQL: read every service (id, name, price) in A-Z order.
         // Each row becomes one <option>; the id is what gets saved in bookings.
-        $services = mysqli_query($conn, "SELECT id, name, price FROM services ORDER BY name");
+        $services = mysqli_query($conn, "SELECT service_id, name, price FROM services ORDER BY name");
         while ($s = mysqli_fetch_assoc($services)) {
         ?>
-          <option value="<?php echo $s['id']; ?>">
+          <option value="<?php echo $s['service_id']; ?>">
             <?php echo htmlspecialchars($s['name']); ?> — $<?php echo number_format($s['price'], 2); ?>
           </option>
         <?php } ?>
@@ -82,10 +82,10 @@ include 'php/header.php';
         <?php
         // SQL: read every staff member so the client can choose who they want.
         // The chosen id is saved as staff_id in the bookings table.
-        $staff = mysqli_query($conn, "SELECT id, name, specialty FROM staff ORDER BY name");
+        $staff = mysqli_query($conn, "SELECT staff_id, name, specialty FROM staff ORDER BY name");
         while ($st = mysqli_fetch_assoc($staff)) {
         ?>
-          <option value="<?php echo $st['id']; ?>">
+          <option value="<?php echo $st['staff_id']; ?>">
             <?php echo htmlspecialchars($st['name']); ?> — <?php echo htmlspecialchars($st['specialty']); ?>
           </option>
         <?php } ?>
