@@ -29,12 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Securely hashing a user's password before storing it in the database
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "INSERT INTO users (name, email, password_hash, phone)
-                    VALUES ('$name', '$email', '$hashed_password', '$phone')";
+            // Make the new user's ID code, e.g. U001, U002 ...
+            $user_id = next_id($conn, "users", "user_id", "U");
+
+            $sql = "INSERT INTO users (user_id, name, email, password_hash, phone)
+                    VALUES ('$user_id', '$name', '$email', '$hashed_password', '$phone')";
             mysqli_query($conn, $sql);
 
             // Logging the new user in straight away and sending them to book an appointment
-            $_SESSION['user_id']   = mysqli_insert_id($conn);
+            $_SESSION['user_id']   = $user_id;
             $_SESSION['user_name'] = $name;
             header("Location: book.php");
             exit;

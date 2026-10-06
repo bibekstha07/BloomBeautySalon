@@ -13,7 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($name == '' || $email == '' || $message == '') {
         $error = "Please fill in all fields.";
     } else {
-        $sql = "INSERT INTO contact_messages (name, email, message) VALUES ('$name', '$email', '$message')";
+        // Make the message's ID code, e.g. M001, M002 ...
+        $message_id = next_id($conn, "contact_messages", "message_id", "M");
+        $sql = "INSERT INTO contact_messages (message_id, name, email, message)
+                VALUES ('$message_id', '$name', '$email', '$message')";
         mysqli_query($conn, $sql);
         $message_sent = true;
     }

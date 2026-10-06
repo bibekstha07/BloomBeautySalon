@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // SQL: find the user with this email in the users table.
     // email is UNIQUE in the database, so this returns one row or none.
-    // We only need id and name (to remember the user) and password_hash
-    // (to check the password). The real password is never stored.
+    // We only need user_id (e.g. U001) and name to remember the user,
+    // and password_hash to check the password. The real password is never stored.
     $result = mysqli_query($conn, "SELECT user_id, name, password_hash FROM users WHERE email = '$email'");
     // Turn the result into an array, e.g. $user['name'].
     // If no user has this email, $user will be null.

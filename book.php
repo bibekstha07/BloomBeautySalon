@@ -15,16 +15,16 @@ $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Read the form values.
-    // Cast IDs to (int) since they should only ever be whole numbers
-    $service_id = (int)$_POST['service_id'];
-    $staff_id   = (int)$_POST['staff_id'];
     // mysqli_real_escape_string makes text safe to put inside an SQL query
-    // (it stops SQL injection, where someone types SQL code into a form)
+    // (it stops SQL injection, where someone types SQL code into a form).
+    // IDs are codes like S002 and E001, so they are escaped like any other text.
+    $service_id = mysqli_real_escape_string($conn, $_POST['service_id']);
+    $staff_id   = mysqli_real_escape_string($conn, $_POST['staff_id']);
     $date       = mysqli_real_escape_string($conn, $_POST['date']);
     $time       = mysqli_real_escape_string($conn, $_POST['time']);
-    $user_id    = (int)$_SESSION['user_id'];
+    $user_id    = mysqli_real_escape_string($conn, $_SESSION['user_id']);
 
-    if ($service_id == 0 || $staff_id == 0 || $date == '' || $time == '') {
+    if ($service_id == '' || $staff_id == '' || $date == '' || $time == '') {
         $error = "Please fill in every field.";
     } else {
         // MySQL's DATETIME format is "YYYY-MM-DD HH:MM:SS",
@@ -35,9 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // - user_id, service_id and staff_id are foreign keys: they link this
         //   booking to a row in the users, services and staff tables.
         // - status starts as 'pending' until the salon confirms the booking.
-        // - id and created_at are filled in by MySQL automatically.
-        $sql = "INSERT INTO bookings (user_id, service_id, staff_id, date_time, status)
-                VALUES ('$user_id', '$service_id', '$staff_id', '$date_time', 'pending')";
+        // - booking_id is the next code (B001, B002 ...) from next_id() in php/db.php.
+        // - created_at is filled in by MySQL automatically.
+        $booking_id = next_id($conn, "bookings", "booking_id", "B");
+        $sql = "INSERT INTO bookings (booking_id, user_id, service_id, staff_id, date_time, status)
+                VALUES ('$booking_id', '$user_id', '$service_id', '$staff_id', '$date_time', 'pending')";
         // Send the INSERT to the database, then show the success message
         mysqli_query($conn, $sql);
         $booked = true;
@@ -63,8 +65,8 @@ include 'php/header.php';
       <select id="service_id" name="service_id" required>
         <option value="">Choose a service...</option>
         <?php
-        // SQL: read every service (id, name, price) in A-Z order.
-        // Each row becomes one <option>; the id is what gets saved in bookings.
+        // SQL: read every service (service_id, name, price) in A-Z order.
+        // Each row becomes one <option>; its service_id is saved in bookings.
         $services = mysqli_query($conn, "SELECT service_id, name, price FROM services ORDER BY name");
         while ($s = mysqli_fetch_assoc($services)) {
         ?>
@@ -81,7 +83,7 @@ include 'php/header.php';
         <option value="">Choose a staff member...</option>
         <?php
         // SQL: read every staff member so the client can choose who they want.
-        // The chosen id is saved as staff_id in the bookings table.
+        // The chosen staff_id is saved in the bookings table.
         $staff = mysqli_query($conn, "SELECT staff_id, name, specialty FROM staff ORDER BY name");
         while ($st = mysqli_fetch_assoc($staff)) {
         ?>
