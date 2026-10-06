@@ -19,7 +19,7 @@ include 'php/header.php';
   <div class="grid grid-3">
     <?php
     // Grab the first 3 services to show off on the home page
-    $result = mysqli_query($conn, "SELECT name, category, price, image_url FROM services ORDER BY id LIMIT 3");
+    $result = mysqli_query($conn, "SELECT name, category, price, image_url FROM services ORDER BY service_id LIMIT 3");
 
     while ($row = mysqli_fetch_assoc($result)) {
 

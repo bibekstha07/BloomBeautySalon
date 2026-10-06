@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = "Passwords do not match.";
     } else {
         // Checking whether a user with a particular email already exists
-        $check_result = mysqli_query($conn, "SELECT id FROM users WHERE email = '$email'");
+        $check_result = mysqli_query($conn, "SELECT user_id FROM users WHERE email = '$email'");
 
         if (mysqli_num_rows($check_result) > 0) {
             $error = "This email already exists. Try logging in instead.";
@@ -29,12 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Securely hashing a user's password before storing it in the database
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "INSERT INTO users (name, email, password_hash, phone)
-                    VALUES ('$name', '$email', '$hashed_password', '$phone')";
+            // Make the new user's ID code, e.g. U001, U002 ...
+            $user_id = next_id($conn, "users", "user_id", "U");
+
+            $sql = "INSERT INTO users (user_id, name, email, password_hash, phone)
+                    VALUES ('$user_id', '$name', '$email', '$hashed_password', '$phone')";
             mysqli_query($conn, $sql);
 
             // Logging the new user in straight away and sending them to book an appointment
-            $_SESSION['user_id']   = mysqli_insert_id($conn);
+            $_SESSION['user_id']   = $user_id;
             $_SESSION['user_name'] = $name;
             header("Location: book.php");
             exit;

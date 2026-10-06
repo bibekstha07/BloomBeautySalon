@@ -7,19 +7,31 @@ if (session_status() == PHP_SESSION_NONE) {
 $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Make the email safe to use inside the SQL query (stops SQL injection).
+    // The password is NOT put into the query, so it is not escaped.
     $email    = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
 
-    $result = mysqli_query($conn, "SELECT id, name, password_hash FROM users WHERE email = '$email'");
+    // SQL: find the user with this email in the users table.
+    // email is UNIQUE in the database, so this returns one row or none.
+    // We only need user_id (e.g. U001) and name to remember the user,
+    // and password_hash to check the password. The real password is never stored.
+    $result = mysqli_query($conn, "SELECT user_id, name, password_hash FROM users WHERE email = '$email'");
+    // Turn the result into an array, e.g. $user['name'].
+    // If no user has this email, $user will be null.
     $user = mysqli_fetch_assoc($result);
 
     // Checking the typed password against the saved password_hash
     if ($user && password_verify($password, $user['password_hash'])) {
-        $_SESSION['user_id']   = $user['id'];
+        // Correct password: save the user in the session so other pages
+        // (like book.php) know who is logged in, then go to the booking form
+        $_SESSION['user_id']   = $user['user_id'];
         $_SESSION['user_name'] = $user['name'];
         header("Location: book.php");
         exit;
     } else {
+        // Same message for a wrong email or a wrong password,
+        // so nobody can use this form to find out which emails are registered
         $error = "Email or password is incorrect.";
     }
 }
