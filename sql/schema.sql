@@ -7,6 +7,9 @@ CREATE DATABASE BloomBeautySalon CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_c
 USE BloomBeautySalon;
 
 -- 1. Users — Registered clients (created via the Register page)
+-- Purpose: stores each client's account and login details (password is stored as a hash).
+-- Relationships: parent table. One user can have many bookings
+--   (users 1 ── * bookings, via bookings.user_id). Deleting a user deletes their bookings.
 CREATE TABLE users (
     user_id            INT AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
@@ -17,6 +20,9 @@ CREATE TABLE users (
 );
 
 -- 2. Services — Services the salon offers
+-- Purpose: the salon's service menu (name, category, price, duration, image) shown on the Services page.
+-- Relationships: parent table. One service can appear in many bookings
+--   (services 1 ── * bookings, via bookings.service_id). Deleting a service deletes its bookings.
 CREATE TABLE services (
     service_id            INT AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
@@ -27,6 +33,9 @@ CREATE TABLE services (
 );
 
 -- 3. Staff — Staff members a client can choose when booking
+-- Purpose: profiles of salon staff (specialty, bio, photo) offered as choices on the Booking page.
+-- Relationships: parent table. One staff member can be assigned to many bookings
+--   (staff 1 ── * bookings, via bookings.staff_id). Deleting a staff member deletes their bookings.
 CREATE TABLE staff (
     staff_id         INT AUTO_INCREMENT PRIMARY KEY,
     name       VARCHAR(100) NOT NULL,
@@ -36,6 +45,13 @@ CREATE TABLE staff (
 );
 
 -- 4. Bookings — Appointment requests; links a user, a service, and a staff member
+-- Purpose: records each appointment (date/time and status, e.g. 'pending').
+-- Relationships: child / junction table with three foreign keys:
+--   user_id    -> users     (who booked)
+--   service_id -> services  (what was booked)
+--   staff_id   -> staff     (who performs it)
+--   Each booking belongs to exactly one user, one service and one staff member;
+--   ON DELETE CASCADE removes the booking if any of those parent rows is deleted.
 CREATE TABLE bookings (
     booking_id          INT AUTO_INCREMENT PRIMARY KEY,
     user_id     INT NOT NULL,
@@ -50,6 +66,9 @@ CREATE TABLE bookings (
 );
 
 -- 5. Contact_messages — Enquiries submitted through the Contact Us form
+-- Purpose: stores enquiries from visitors (name, email, message, time submitted).
+-- Relationships: standalone table with no foreign keys — visitors do not need an
+--   account to send a message, so it is not linked to users.
 CREATE TABLE contact_messages (
     message_id            INT AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
