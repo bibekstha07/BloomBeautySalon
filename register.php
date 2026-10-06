@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = "Passwords do not match.";
     } else {
         // Checking whether a user with a particular email already exists
-        $check_result = mysqli_query($conn, "SELECT id FROM users WHERE email = '$email'");
+        $check_result = mysqli_query($conn, "SELECT user_id FROM users WHERE email = '$email'");
 
         if (mysqli_num_rows($check_result) > 0) {
             $error = "This email already exists. Try logging in instead.";
