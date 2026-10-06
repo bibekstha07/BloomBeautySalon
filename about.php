@@ -48,7 +48,7 @@ if (file_exists(__DIR__ . '/' . $banner_file)) {
   <div class="grid grid-3">
     <?php
     // Everything here comes from the staff table
-    $staff = mysqli_query($conn, "SELECT name, specialty, bio, photo_url FROM staff ORDER BY id");
+    $staff = mysqli_query($conn, "SELECT name, specialty, bio, photo_url FROM staff ORDER BY staff_id");
 
     while ($member = mysqli_fetch_assoc($staff)) {
 
