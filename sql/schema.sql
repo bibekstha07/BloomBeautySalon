@@ -8,7 +8,7 @@ USE BloomBeautySalon;
 
 -- 1. Users — Registered clients (created via the Register page)
 CREATE TABLE users (
-    id            INT AUTO_INCREMENT PRIMARY KEY,
+    user_id            INT AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
     email         VARCHAR(150) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE users (
 
 -- 2. Services — Services the salon offers
 CREATE TABLE services (
-    id            INT AUTO_INCREMENT PRIMARY KEY,
+    service_id            INT AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
     category      VARCHAR(50)  NOT NULL,
     price         DECIMAL(6,2) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE services (
 
 -- 3. Staff — Staff members a client can choose when booking
 CREATE TABLE staff (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
+    staff_id         INT AUTO_INCREMENT PRIMARY KEY,
     name       VARCHAR(100) NOT NULL,
     specialty  VARCHAR(100),
     bio        TEXT,
@@ -37,7 +37,7 @@ CREATE TABLE staff (
 
 -- 4. Bookings — Appointment requests; links a user, a service, and a staff member
 CREATE TABLE bookings (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id          INT AUTO_INCREMENT PRIMARY KEY,
     user_id     INT NOT NULL,
     service_id  INT NOT NULL,
     staff_id    INT NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE bookings (
 
 -- 5. Contact_messages — Enquiries submitted through the Contact Us form
 CREATE TABLE contact_messages (
-    id            INT AUTO_INCREMENT PRIMARY KEY,
+    message_id            INT AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
     email         VARCHAR(150) NOT NULL,
     message       TEXT NOT NULL,
@@ -60,16 +60,16 @@ CREATE TABLE contact_messages (
 
 -- 6. Inserting sample data 
 
-INSERT INTO services (name, category, price, duration_min, image_url) VALUES
-('Haircut & Style',      'Hair',             55.00,  45, 'images/services/haircut-style.jpg'),
-('Hair Colour',          'Hair',            120.00,  90, 'images/services/hair-colour.jpg'),
-('Classic Manicure',     'Nails',            35.00,  30, 'images/services/classic-manicure.jpg'),
-('Gel Manicure',         'Nails',            45.00,  40, 'images/services/gel-manicure.jpg'),
-('Deep Cleanse Facial',  'Skin',             80.00,  60, 'images/services/deep-cleanse-facial.jpg'),
-('Waxing/Hair Removal',  'Waxing',           55.00,  45, 'images/services/waxing.jpg'),
-('Brows and Lashes',     'Brows and Lashes', 20.00,  25, 'images/services/brows-lashes.jpg');
+INSERT INTO services (service_id, name, category, price, duration_min, image_url) VALUES
+('S001', 'Haircut & Style',      'Hair',             55.00,  45, 'images/services/haircut-style.jpg'),
+('S002', 'Hair Colour',          'Hair',            120.00,  90, 'images/services/hair-colour.jpg'),
+('S003', 'Classic Manicure',     'Nails',            35.00,  30, 'images/services/classic-manicure.jpg'),
+('S004', 'Gel Manicure',         'Nails',            45.00,  40, 'images/services/gel-manicure.jpg'),
+('S005', 'Deep Cleanse Facial',  'Skin',             80.00,  60, 'images/services/deep-cleanse-facial.jpg'),
+('S005', 'Waxing/Hair Removal',  'Waxing',           55.00,  45, 'images/services/waxing.jpg'),
+('S006', 'Brows and Lashes',     'Brows and Lashes', 20.00,  25, 'images/services/brows-lashes.jpg');
 
-INSERT INTO staff (name, specialty, bio, photo_url) VALUES
-('Aria Chen',  'Hair & Colour, Hair Removal/Waxing', 'Specialist in colour correction, modern cuts, and hair removal/waxing.',                 'images/staff/aria-chen.jpg'),
-('Marcus Lee', 'Brows & Lashes, Nails',              'Specialist in brows, lashes, and gel & nail art with a steady, precise hand.',          'images/staff/marcus-lee.jpg'),
-('Priya Nair', 'Facials & Skin',                     'Certified skin therapist focused on gentle, effective facial/skin treatments.',         'images/staff/priya-nair.jpg');
+INSERT INTO staff (staff_id, name, specialty, bio, photo_url) VALUES
+('E001', 'Aria Chen',  'Hair & Colour, Hair Removal/Waxing', 'Specialist in colour correction, modern cuts, and hair removal/waxing.',                 'images/staff/aria-chen.jpg'),
+('E002', 'Marcus Lee', 'Brows & Lashes, Nails',              'Specialist in brows, lashes, and gel & nail art with a steady, precise hand.',          'images/staff/marcus-lee.jpg'),
+('E003', 'Priya Nair', 'Facials & Skin',                     'Certified skin therapist focused on gentle, effective facial/skin treatments.',         'images/staff/priya-nair.jpg');
